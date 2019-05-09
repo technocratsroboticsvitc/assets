@@ -1,0 +1,9 @@
+https://github.com/texane/stlink
+https://github.com/texane/stlink/blob/master/doc/tutorial.md
+http://amitesh-singh.github.io/stm32/2017/04/09/setting-stm32-dev-environment-arch-linux.html
+https://gctechspace.org/2014/09/getting-to-blinky-with-the-stm32-and-ubuntu-linux/
+https://www.badprog.com/electronics-stm32-using-the-push-button-to-switch-on-the-led6-on-the-stm32f3-discovery-board
+https://github.com/badprog
+https://touchgfx.zendesk.com/hc/en-us/articles/205264831-How-do-I-program-STM32-based-boards-using-ST-Link-utility-
+https://atollic.com/resources/download/linux/linux-archive/?submissionGuid=b48d4d2f-f20a-4159-8a54-eb03c86b7676
+

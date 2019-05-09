@@ -1,0 +1,245 @@
+                         COMMUNICATIONS CSE : 
+
+1. RF Communication ( combining with PC or arm cortex )
+// done character transmission over RF in arduino
+// research how to do with stm 32 arm cortex or PC (needed for bot control from PC)
+
+
+2. Video Feed Compression and Transmission (over RF)
+// done video transmission over Wi-Fi , need to do compression over Wi-Fi (on PC)
+// research on how to connect RF we have (NRF24L01+LNA+PA) direclty to PC for use.
+// try video transmission on RF (PC) , then try video compression+transmission
+
+
+3. Serial Communication between PC and ARM Cortex
+// send from base PC to bot PC and bot PC forwards it to ARM Cortex
+// see if possible to communicate directly with ARM Cortex from base PC 
+// (for posibility that communication between bot PC and ARM is somehow broken)
+
+
+4. Antenna (taking what we have)
+// NRF24L01+PA+LNA (RF) specification says that it can go to 1100m for 250KBps
+// NRF24L01+PA+LNA (RF) specification says that it can go to 750m for 1MBps
+// NRF24L01+PA+LNA (RF) specification says that it can go to 520m for 2MBps
+// will need 2MBps for video feed transmission 
+// 480*640*3 bytes (approx 0.9MBPS) if video feed done through RF
+
+
+
+
+
+
+=========================================================================================================
+
+
+
+
+                         AUTONOMOUS CSE :
+
+1. GPS and magnetometer (Autonomous Chassis) 
+
+OPTION A : Robocraze NEO M8N GPS MODULE WITH COMPASS FOR APM ARDUPILOT ARDUCOPTER ( RC-A-41199 )
+	   // Positional Accuracy : 2m
+	   // Quick Satellite Searching : 10s for 6 satellite in open space
+
+OPTION B : Generic Mini APM Connector : F18468/70 NEO-7M 7M GPS Module with Compass for APM2.5 2.6 2.8 PIX FC Flight Controller 
+           // lowest price : 1500
+
+
+2. Autonomous Arm 
+// get height of image using image processing
+// create traingle around object
+// creare triangle around arm gripper 
+// guess distance/rotation for arm from similarity of triangles and move motors accordingly
+
+
+
+
+
+=========================================================================================================
+
+
+
+
+
+
+
+			MONITORING ROVER POSITION : 
+
+1. Position of rover in field (https://en.wikipedia.org/wiki/Kalman_filter)
+//Method : Kalman Filter 
+
+//Meaning : 
+In statistics and control theory, Kalman filtering, also known as linear quadratic estimation (LQE), is an algorithm that uses a series of measurements observed over time, containing statistical noise and other inaccuracies, and produces estimates of unknown variables that tend to be more accurate than those based on a single measurement alone, by estimating a joint probability distribution over the variables for each timeframe.
+
+//Example : 
+As an example application, consider the problem of determining the precise location of a truck. The truck can be equipped with a GPS unit that provides an estimate of the position within a few meters. The GPS estimate is likely to be noisy; readings 'jump around' rapidly, though remaining within a few meters of the real position. In addition, since the truck is expected to follow the laws of physics, its position can also be estimated by integrating its velocity over time, determined by keeping track of wheel revolutions and the angle of the steering wheel. This is a technique known as dead reckoning. Typically, the dead reckoning will provide a very smooth estimate of the truck's position, but it will drift over time as small errors accumulate. 
+
+In this example, the Kalman filter can be thought of as operating in two distinct phases: predict and update. In the prediction phase, the truck's old position will be modified according to the physical laws of motion (the dynamic or "state transition" model). Not only will a new position estimate be calculated, but a new covariance will be calculated as well. Perhaps the covariance is proportional to the speed of the truck because we are more uncertain about the accuracy of the dead reckoning position estimate at high speeds but very certain about the position estimate when moving slowly. Next, in the update phase, a measurement of the truck's position is taken from the GPS unit. Along with this measurement comes some amount of uncertainty, and its covariance relative to that of the prediction from the previous phase determines how much the new measurement will affect the updated prediction. Ideally, as the dead reckoning estimates tend to drift away from the real position, the GPS measurement should pull the position estimate back towards the real position but not disturb it to the point of becoming rapidly jumping and noisy. 
+
+
+2. Visual odometry with sensors (https://en.wikipedia.org/wiki/Visual_odometry)
+//Meaning : 
+In robotics and computer vision, visual odometry is the process of determining the position and orientation of a robot by analyzing the associated camera images. It has been used in a wide variety of robotic applications, such as on the Mars Exploration Rovers.
+
+
+//Algorithm : 
+Most existing approaches to visual odometry are based on the following stages.
+
+    1. Acquire input images: using either single cameras., stereo cameras, or omnidirectional cameras.
+    
+    2. Image correction: apply image processing techniques for lens distortion removal, etc.
+    
+    3. Feature detection: define interest operators, and match features across frames and construct optical flow field.
+        
+	1. Use correlation to establish correspondence of two images, and no long term feature tracking.
+        2. Feature extraction and correlation.
+        3. Construct optical flow field (Lucas–Kanade method).
+
+    4. Check flow field vectors for potential tracking errors and remove outliers.
+
+    5. Estimation of the camera motion from the optical flow.
+        Choice 1: Kalman filter for state estimate distribution maintenance.
+        Choice 2: find the geometric and 3D properties of the features that minimize a cost function based on the re-projection error between two adjacent images. This can be done by mathematical minimization or random sampling.
+
+    6. Periodic repopulation of trackpoints to maintain coverage across the image.
+
+
+
+
+
+=========================================================================================================
+
+
+
+
+
+
+
+			MONITORING ROVER SYSTEMS : 
+
+1. Status System : 
+// Create LED system to alert runners (if legal to put lights on rover)
+// Decide on convention 
+// 
+
+
+2. Motor Feedback : 
+// Using feedbabck from motors (pwm , current etc)
+// regulate power accordingly
+// detect if motor is working properly or not
+
+// Tachometer : Provides a single pulse for every revolution of the motor. Poor resolution so you can not do position control 
+
+// Quadrature : Provides precise position by looking at an optical rotary disk. Low mass. Can be sensitive to contamination and shock/vibration. Does not provide absolute position.
+
+// Resolver : Very high precision by looking at the magnetic fields of the coils. These are more robust than quadrature encoders and can withstand harsh environments, higher temperatures, shock, and vibration.
+
+// Analog Potentiometer : This is a resistor that can be used for both rotary or linear (with a string pot) applications. They provide an absolute position of the devices location. Often they can not be used by commercial motor controllers for the position feedback and you need to monitor it in your own control loop. Can be subject to wear and tear from continuous use.
+
+// Analog Hall Sensor : Similar to the analog pot. However since it uses a hall sensor it has a longer life time. This also provides an absolute position. Can sometimes have a small non linearity to the output.
+
+// Absolute Encoders: There are many protocols for using an encoder with absolute position feedback. Many used custom encoding wheels. Every device supports slightly different versions and are often not compatible between vendors. Many of these protocols are proprietary. Often only absolute position of the motor and not the output like the string pots.
+
+// PID Feedback : Without feedback the robot is limited to using timing to determine if it's gone far enough, turned enough, or is going fast enough. And for mechanisms, without feedback it's almost impossible to get arms at the right angle, elevators at the right height, or shooters to the right speed. There are a number of ways of getting these mechanisms to operate in a predictable way. The most common is using PID (Proportional, Integral, and Differential) control.
+
+
+3. Interface and Server :
+
+OPTION 1 : Stay with Flask 
+
+OPTION 2 : Electron 
+//Electron is an open-source framework developed and maintained by GitHub. Electron allows for the development of desktop GUI applications using front and back end components originally developed for web applications: Node.js runtime for the backend and Chromium for the frontend. Electron is the main GUI framework behind several notable open-source projects including Atom, Visual Studio Code, and Light Table.
+
+
+
+
+=========================================================================================================
+
+
+
+
+				
+				CSE CSE : 
+
+1. Object Detection :
+// Tensorflow is enough for IRC (blue bottle, yellow disk, red box)
+// For ERC, train model using dimensions 
+
+
+2. Database : 
+// Not Required for IRC (can implement for soil task if needed for large amount of sensor values)
+// Definitely needed for ERC since live server won't be able to handle so much data
+
+
+3. Robot Operating System : 
+//Meaning 
+Although ROS is not an operating system, it provides services designed for a heterogeneous computer cluster such as hardware abstraction, low-level device control, implementation of commonly used functionality, message-passing between processes, and package management
+
+//Can implement our own ROS by integrating all our codes properly
+
+
+4. LIDAR Software : (https://en.wikipedia.org/wiki/Lidar)
+// Not required for IRC 
+// For ERC keep it as second option in case we cannot implement our own image mapping using stereocamera/cctv
+
+//Working 
+Lidar is a surveying method that measures distance to a target by illuminating the target with pulsed laser light and measuring the reflected pulses with a sensor. Differences in laser return times and wavelengths can then be used to make digital 3-D representations of the target. The name lidar, now used as an acronym of light detection and ranging.
+The technology is also used in control and navigation for some autonomous cars.
+
+//Autonomous application
+Autonomous vehicles may use lidar for obstacle detection and avoidance to navigate safely through environments, using rotating laser beams. Cost map or point cloud outputs from the lidar sensor provide the necessary data for robot software to determine where potential obstacles exist in the environment and where the robot is in relation to those potential obstacles.
+
+// Robotics application
+Lidar technology is being used in robotics for the perception of the environment as well as object classification. The ability of lidar technology to provide three-dimensional elevation maps of the terrain, high precision distance to the ground, and approach velocity can enable safe landing of robotic and manned vehicles with a high degree of precision. Lidar are also widely used in robotics for simultaneous localization and mapping and well integrated into robot simulators
+
+
+5. Embedded C in STM 32 ARM Cortex
+// Learn how to code in embedded C to control ARM cortex
+ 
+
+
+
+=========================================================================================================
+
+
+
+			SOIL CSE : 
+
+
+1. Thermal Mapping : (https://ieeexplore.ieee.org/document/6630890)
+
+//3D thermal mapping of building interiors using an RGB-D and thermal camera
+
+//The building sector is the dominant consumer of energy and therefore a major contributor to anthropomorphic climate change. The rapid generation of photorealistic, 3D environment models with incorporated surface temperature data has the potential to improve thermographic monitoring of building energy efficiency. 
+In pursuit of this goal, we propose a system which combines a range sensor with a thermal-infrared camera. Our proposed system can generate dense 3D models of environments with both appearance and temperature information, and is the first such system to be developed using a low-cost RGB-D camera. The proposed pipeline processes depth maps successively, forming an ongoing pose estimate of the depth camera and optimizing a voxel occupancy map. 
+Voxels are assigned 4 channels representing estimates of their true RGB and thermal-infrared intensity values. Poses corresponding to each RGB and thermal-infrared image are estimated through a combination of timestamp-based interpolation and a predetermined knowledge of the extrinsic calibration of the system. Raycasting is then used to color the voxels to represent both visual appearance using RGB, and an estimate of the surface temperature. 
+The output of the system is a dense 3D model which can simultaneously represent both RGB and thermal-infrared data using one of two alternative representation schemes. Experimental results demonstrate that the system is capable of accurately mapping difficult environments, even in complete darkness.
+
+
+
+2. Moisture Mapping : 
+
+OPTION 1 : (https://www.sciencedirect.com/science/article/abs/pii/S003442571300076X)
+//The main objective of this research is to develop, test and validate a soil moisture content (SMC) algorithm for GMES Sentinel-1 characteristics. 
+The SMC product, which is to be generated from Sentinel-1 data, requires an algorithm capable of processing operationally in near-real-time and delivering the product to the GMES services within 3 h from observation. 
+An approach based on an Artificial Neural Network (ANN) has been proposed that represents a good compromise between retrieval accuracy and processing time, thus enabling compliance with the timeliness requirements. 
+The algorithm has been tested and subsequently validated in several test areas in Italy, Australia, and Spain.
+
+
+OPTION 2 : ()
+// Radar Mapping of Surface soil moisture
+//(PDF IN FOLDER)
+
+
+3. Report Builiding Internally (will need database for it)
+// Write script that accesses the database and creates varying graphs with timestamps
+// creates a file with sensor values and graphs for each minute or half a minute
+
+
+4. Camera Analysis (color changes/effervescence)
+// Needed for tests such as litmus paper or carbonate tests
+// would need to know exact time of start of reaction - some indication in beaker
+// check status of individual beakers depending on reaction going on in them
+// need to create convention for it.
+
